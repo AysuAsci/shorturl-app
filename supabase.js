@@ -17,3 +17,32 @@ export const signUpUser = async (email, password) => {
   }
   return user; 
 };
+
+// URL ekleme
+export const addUrl = async (url) => {
+  const { data, error } = await supabase
+    .from('urls') 
+    .insert([
+      { url, user_id: supabase.auth.user()?.id }, 
+    ]);
+
+  if (error) {
+    console.error('URL eklenirken hata:', error.message);
+  } else {
+    console.log('URL eklendi:', data);
+  }
+};
+
+// Kullanıcı girişi
+export const signInUser = async (email, password) => {
+  const { user, error } = await supabase.auth.signIn({
+    email,
+    password,
+  });
+
+  if (error) {
+    console.error('Giriş hatası:', error.message);
+    return null; 
+  return user; 
+};
+}
