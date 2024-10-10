@@ -1,46 +1,26 @@
-import { useState } from 'react';
-import { supabase } from '../../supabase';
 
-export const signUpUser = async (email, password) => {
-  const { user, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (error) {
-    console.error('Kayıt hatası:', error.message);
-    return null;
-  } else {
-    console.log('Kullanıcı kaydedildi:', user);
-    return user;
-  }
-};
+import React, { useState } from 'react';
+import { signUpUser, addUrl } from '../../supabase'; 
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [url, setUrl] = useState('');
 
-  const handleRegister = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
+    const user = await signUpUser(email, password); 
 
-    const user = await signUpUser(email, password);
-    if (!user) {
-      setErrorMessage('Kayıt işlemi başarısız oldu. Lütfen tekrar deneyin.');
-      setSuccessMessage('');
-    } else {
-      setErrorMessage('');
-      setSuccessMessage('Kayıt işlemi başarılı! Giriş yapabilirsiniz.');
-    
-      console.log('Kullanıcı kaydı başarılı:', user);
+    if (user) {
+      await addUrl(url); 
+      alert('Kullanıcı kaydedildi ve URL eklendi!');
     }
   };
 
   return (
     <div>
       <h2>Kayıt Ol</h2>
-      <form onSubmit={handleRegister}>
+      <form onSubmit={handleSignUp}>
         <input
           type="email"
           placeholder="E-posta"
@@ -55,10 +35,15 @@ const Register = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">Kayıt Ol</button>
+        <input
+          type="text"
+          placeholder="Ekleyeceğiniz URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          required
+        />
+        <button type="submit">Kayıt Ol ve URL Ekle</button>
       </form>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
     </div>
   );
 };
