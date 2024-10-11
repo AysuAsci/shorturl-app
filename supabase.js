@@ -33,7 +33,7 @@ export const addUrl = async (url) => {
   }
 };
 
-// Kullanıcı girişi
+
 export const signInUser = async (email, password) => {
   const { user, error } = await supabase.auth.signIn({
     email,
